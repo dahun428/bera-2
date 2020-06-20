@@ -1,0 +1,28 @@
+review.insertReview=insert into br_reviews \
+					 (review_no, product_no, user_id, title, content) \
+					 values \
+					 (SEQ_REVIEW_NO.nextval, ?, ?, ?, ?)
+					 
+review.getReviewsByProductNo=select review_no, user_id, title, content \
+                          from br_reviews \
+                          where product_no = ? \
+                          order by reg_date desc
+                          
+review.updateReview=update br_reviews \
+					set \
+						review_title = ?, \
+						review_content = ?, \
+					where review_no = ?
+					
+review.deleteReview=update br_reviews \
+				  set \
+				  	deleted= 0 \
+				  where review_no = ?
+                          
+review.getallByproductNo=select product_no, image_path \
+						 from br_product_image_path
+						 
+review.getAllReviews=select review_no, product_no, order_no, user_id, title, content, reg_date, liked \
+					from br_reviews \
+					where re
+					order by review_no desc
