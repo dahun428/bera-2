@@ -8,7 +8,7 @@
 <%
 	int eventNo = NumberUtil.stringToInt(request.getParameter("no"));
 	EventService eventService = new EventService();
-	EventDto event = eventService.getEventContentByNo(eventNo);
+	EventDto event = eventService.getEventByNo(eventNo);
 %>
 <!DOCTYPE html>
 <html>
@@ -40,8 +40,11 @@
 							<p>베스킨라빈스 회원들에게 드리는 특별한 혜택을 만나보세요</p>
 						</div>
 						<div class="row">
+						<%
+							if(event != null){
+						%>
+						
 							<div class="col-12">
-
 								<div class="card">
 									<div class="card-header text-center">
 									<!-- event title -->
@@ -66,27 +69,39 @@
 											</td>
 										</tr>
 										<%
-										if(StringUtils.isEmpty(event.getImagePath()) == false){
+										if(StringUtils.isEmpty(event.getContentImagePath()) == false){
 										%>
 										<tr>
 											<td class="text-center custom-event-box">
-												<img src="../image/EVENT/<%=event.getImagePath() %>" alt="" />
+												<img src="../image/EVENT/<%=event.getContentImagePath() %>" alt="" />
 											</td>
 										</tr>
 										<%
 										}
+										%>
+										<%
+										if(StringUtils.isEmpty(event.getContent()) == false){
+										%>	
+										<tr>
+											<td>
+												 <p style="margin: 10px 100px;"><%=event.getContent() %></p>
+											</td>
+										</tr>
+										<%
+										}
+									
 										%>
 									</tbody>
 								</table>
 									</div>
 								</div>
 							</div>
+							<%
+								}
+							%>
 							<div class="col-12 text-center">
 								<hr />
 								<a href="list.jsp" class="btn btn-outline-primary btn-lg">목록으로</a>
-							</div>
-							<div class="col-12 text-right">
-								<a href="modifyform.jsp?no=<%=eventNo %>" class="btn btn-primary">수정</a>
 							</div>
 						</div>
 					</div>

@@ -119,32 +119,7 @@ public class EventDao {
 			}
 		}, beginIndex, endIndex);
 	}
-	
-	
-	
-	
-	
-	
-	public List<EventDto> getAllEventProgress() {
-		String query = QueryUtil.getSQL("event.getAllEventProgress");
-		return JdbcHelper.selectList(query, new RowMapper<EventDto>() {
-			public EventDto mapRow(ResultSet rs) throws SQLException {
-				return resultFunc(rs);
-			}
-		});
-	}
-	public List<EventDto> getAllEventTerminated() {
-		String query = QueryUtil.getSQL("event.getAllEventTerminated");
-		return JdbcHelper.selectList(query, new RowMapper<EventDto>() {
-			public EventDto mapRow(ResultSet rs) throws SQLException {
-				return resultFunc(rs);
-			}
-		});
-	}
-	
-
-	
-	
+		
 	/**
 	 * eventNo와 image 이름(path값) 을 전달받아 DB에 insert 한다.
 	 * @param eventNo
@@ -257,40 +232,7 @@ public class EventDao {
 		}, eventNo);
 		
 	}
-	public List<EventDto> getAllEventThumbnail(){
-		
-		String query = QueryUtil.getSQL("event.getAllEventThumbnail");
-		return JdbcHelper.selectList(query, new RowMapper<EventDto>() {
-
-			public EventDto mapRow(ResultSet rs) throws SQLException {
-				return resultFunc(rs);
-			}
-		});
-	}
-	public List<EventDto> getAllEventContent(){
-		
-		String query = QueryUtil.getSQL("event.getAllEventContent");
-		return JdbcHelper.selectList(query, new RowMapper<EventDto>() {
-
-			public EventDto mapRow(ResultSet rs) throws SQLException {
-				return resultFunc(rs);
-			}
-		});
-	}
-	public List<EventDto> getAllEventBanner(){
-		
-		String query = QueryUtil.getSQL("event.getAllEventBanner");
-		return JdbcHelper.selectList(query, new RowMapper<EventDto>() {
-
-			public EventDto mapRow(ResultSet rs) throws SQLException {
-				return resultFunc(rs);
-			}
-		});
-	}
-	public void/*List<Event>*/ getAllEvent(/**/) {
-		
-		
-	}
+	
 
 	/**
 	 * 이벤트 넘버에 해당하는 EventDto List를 반환한다.
@@ -323,9 +265,30 @@ public class EventDao {
 		
 	}
 	public void/*List<Event>*/ getEndedEvent() {}
-	public void deleteEventImage(int eventNo, String imageType) {
-		String query = QueryUtil.getSQL("event.deleteEventImage");
-		JdbcHelper.update(query, imageType, eventNo);
+	/**
+	 * br_events_image_path 테이블 update 쿼리
+	 * @param eventNo
+	 * @param imagePath
+	 * @param imageType
+	 */
+	public void updateEventImage(int eventNo,String imagePath, String imageType) {
+		String query = QueryUtil.getSQL("event.updateEventImage");
+		JdbcHelper.update(query, imagePath, imageType, eventNo);
+	}
+	
+	public void updateEvent(EventDto event) throws SQLException {
+		String query = QueryUtil.getSQL("event.updateEvent");
+		Connection conn = ConnectionUtil.getConnection();
+		PreparedStatement pstmt = conn.prepareStatement(query);
+		pstmt.setString(1, event.getTitle());
+		pstmt.setString(2, event.getContent());
+		pstmt.setDate(3, new java.sql.Date(event.getStartDate().getTime()));
+		pstmt.setDate(4, new java.sql.Date(event.getEndDate().getTime()));
+		pstmt.setBoolean(5, event.isEnded());
+		pstmt.setInt(6, event.getNo());
+		pstmt.executeUpdate();
+		
+		ConnectionUtil.close(conn, pstmt);
 	}
 	
 	private EventDto resultFunc(ResultSet rs) throws SQLException {

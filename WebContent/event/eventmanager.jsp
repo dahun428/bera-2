@@ -4,14 +4,6 @@
 <%@page import="com.br.service.EventService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%
-	EventService eventService = new EventService();
-	List<EventDto> progressEvent = eventService.getAllEventProgressThumbnailType();
-	List<EventDto> endEvent = eventService.getAllEventTerminatedThumbnailType();
-	List<EventDto> progressBanner = eventService.getAllEventProgressBannerType();
-	List<EventDto> endBanner = eventService.getAllEventTerminatedBannerType();
-	
-%>
 <!DOCTYPE html>
 <html>
 <head>

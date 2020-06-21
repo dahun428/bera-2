@@ -43,104 +43,11 @@ public class EventService {
 		return eventDao.getEndedEventListBannerTypeTotalRows();
 	}
 	
-	
-	
-	
 	/**
-	 * 진행중인 컨텐트 타입 이벤트 리스트 불러오기
-	 * @return
+	 * 이벤트 추가
+	 * @param event
+	 * @throws SQLException
 	 */
-	public List<EventDto> getAllEventProgressContentType() {
-		List<EventDto> eventList = eventDao.getAllEventProgress();
-		List<EventDto> events = new ArrayList<EventDto>();
-		for(EventDto eventSelect : eventList) {
-			if("0".equals(eventSelect.getEventType())) {
-				EventDto event = eventSelectFunc(eventSelect);
-				events.add(event);
-			}
-		}
-		return events;
-	}
-	/**
-	 * 진행중인 썸네일 타입 이벤트 리스트 불러오기
-	 * @return
-	 */
-	public List<EventDto> getAllEventProgressThumbnailType() {
-		List<EventDto> eventList = eventDao.getAllEventProgress();
-		List<EventDto> events = new ArrayList<EventDto>();
-		for(EventDto eventSelect : eventList) {
-			if("1".equals(eventSelect.getEventType())) {
-				EventDto event = eventSelectFunc(eventSelect);
-				events.add(event);
-			}
-		}
-		return events;
-	}
-	/**
-	 * 진행중인 배너 타입 이벤트 리스트 불러오기
-	 * @return
-	 */
-	public List<EventDto> getAllEventProgressBannerType() {
-		List<EventDto> eventList = eventDao.getAllEventProgress();
-		List<EventDto> events = new ArrayList<EventDto>();
-		for(EventDto eventSelect : eventList) {
-			if("2".equals(eventSelect.getEventType())) {
-				EventDto event = eventSelectFunc(eventSelect);
-				events.add(event);
-			}
-		}
-		return events;
-	}
-	/**
-	 * 종료된 컨텐트 타입 이벤트 리스트 불러오기
-	 * @return
-	 */
-	public List<EventDto> getAllEventTerminatedContentType() {
-		List<EventDto> eventList = eventDao.getAllEventTerminated();
-		List<EventDto> events = new ArrayList<EventDto>();
-		for(EventDto eventSelect : eventList) {
-			if("0".equals(eventSelect.getEventType())) {
-				EventDto event = eventSelectFunc(eventSelect);
-				events.add(event);
-			}
-		}
-		return events;
-	}
-	/**
-	 * 종료된 썸네일 타입 이벤트 리스트 불러오기
-	 * @return
-	 */
-	public List<EventDto> getAllEventTerminatedThumbnailType() {
-		List<EventDto> eventList = eventDao.getAllEventTerminated();
-		List<EventDto> events = new ArrayList<EventDto>();
-		for(EventDto eventSelect : eventList) {
-			if("1".equals(eventSelect.getEventType())) {
-				EventDto event = eventSelectFunc(eventSelect);
-				events.add(event);
-			}
-		}
-		return events;
-	}
-	/**
-	 * 종료된 배너 타입 이벤트 리스트 불러오기
-	 * @return
-	 */
-	public List<EventDto> getAllEventTerminatedBannerType() {
-		List<EventDto> eventList = eventDao.getAllEventTerminated();
-		List<EventDto> events = new ArrayList<EventDto>();
-		for(EventDto eventSelect : eventList) {
-			if("2".equals(eventSelect.getEventType())) {
-				EventDto event = eventSelectFunc(eventSelect);
-				events.add(event);
-			}
-		}
-		return events;
-	}
-	
-	
-	
-	
-	
 	public void insertEvent(EventDto event) throws SQLException{
 		
 		int eventNo = 0;
@@ -162,6 +69,12 @@ public class EventService {
 		}
 		
 	}
+	/**
+	 * 이벤트 이미지 타입별로 받아오기
+	 * @param eventNo
+	 * @param eventType
+	 * @return
+	 */
 	public EventDto getEventImageByNo(int eventNo, String eventType) {
 		
 		EventDto event = null;
@@ -176,16 +89,32 @@ public class EventService {
 		
 		return event;
 	}
-	
-	public List<EventDto> getAllEventThumbnail(){
-		return eventDao.getAllEventThumbnail();
+	/**
+	 * 현재 상태에 따라서 종료, 시작을 자동으로 해주는 토글 이벤트 메소드
+	 * @param event
+	 * @throws SQLException
+	 */
+	public void eventStartToggle(EventDto event) throws SQLException {
+		if(event.isEnded() == false) {
+			event.setEnded(true);
+		} else {
+			event.setEnded(false);
+		}
+		eventDao.updateEvent(event);
 	}
-	public EventDto getEventContentByNo(int eventNo) {
-		return eventDao.getEventContentByNo(eventNo);
-	}
+	/**
+	 * 이미지 타입과 번호를 받아서 해당 이미지 테이블의 데이터를 null 로 바꾼다.
+	 * @param eventNo
+	 * @param imageType
+	 */
 	public void deleteEventImage(int eventNo, String imageType) {
-		eventDao.deleteEventImage(eventNo, imageType);
+		eventDao.updateEventImage(eventNo, "", imageType);
 	}
+	/**
+	 * 해당 이미지 넘버를 받아와 하나의 객체로 변환한다.
+	 * @param eventNo
+	 * @return
+	 */
 	public EventDto getEventByNo(int eventNo) {
 		List<EventDto> events = eventDao.getEventListByNo(eventNo);
 		
@@ -216,20 +145,6 @@ public class EventService {
 		event.setBannerImagePath(bannerImagePath);
 	
 		return event;
-	}
-	
-	private EventDto eventSelectFunc(EventDto eventSelect) {
-			EventDto event = new EventDto();
-			event.setNo(eventSelect.getNo());
-			event.setTitle(eventSelect.getTitle());
-			event.setContent(eventSelect.getContent());
-			event.setStartDate(eventSelect.getStartDate());
-			event.setEndDate(eventSelect.getEndDate());
-			event.setEnded(eventSelect.isEnded());
-			event.setBanner(eventSelect.isBanner());
-			event.setImagePath(eventSelect.getImagePath());
-			event.setEventType(eventSelect.getEventType());
-			return event;
 	}
 	
 }
